@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos;
 using API.Entities;
 using API.Interfaces;
@@ -29,9 +25,11 @@ namespace API.Data
             .SingleOrDefaultAsync();
         }
 
-        public Task<IEnumerable<MemberDto>> GetMembersAsync()
+        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Users
+            .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
@@ -48,9 +46,9 @@ namespace API.Data
 
         public async Task<IEnumerable<AppUser>> getUsersAsync()
         {
-           return await _context.Users
-           .Include(p => p.Photos)
-           .ToListAsync();
+            return await _context.Users
+            .Include(p => p.Photos)
+            .ToListAsync();
         }
 
         public async Task<bool> SaveAllAsync()
@@ -60,7 +58,7 @@ namespace API.Data
 
         public void Update(AppUser user)
         {
-           _context.Entry(user).State = EntityState.Modified;           
+            _context.Entry(user).State = EntityState.Modified;
         }
     }
 }
